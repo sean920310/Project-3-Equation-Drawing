@@ -1,4 +1,7 @@
 <RCC>
-    <qresource prefix="Project3">
+    <qresource prefix="/Project3">
+        <file>uiIcons/visible_icon.png</file>
+        <file>uiIcons/invisible_icon.png</file>
+        <file>uiIcons/close_icon.png</file>
     </qresource>
 </RCC>

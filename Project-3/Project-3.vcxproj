@@ -85,9 +85,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ListModel.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Viewer.cpp" />
     <QtRcc Include="Project3.qrc" />
+    <QtUic Include="ListModel.ui" />
     <QtUic Include="paintWidget.ui" />
     <QtUic Include="Project3.ui" />
     <QtMoc Include="Project3.h" />
@@ -102,8 +104,14 @@
     <QtMoc Include="paintWidget.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="ListModel.h" />
+    <ClInclude Include="MainHeader.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Viewer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Project3 grading sheet.docx" />
+    <None Include="Project3-Equation Drawing.pptx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

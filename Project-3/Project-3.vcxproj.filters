@@ -16,6 +16,9 @@
     <ClCompile Include="Parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ListModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -41,12 +44,18 @@
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
       <ParseFiles>true</ParseFiles>
     </Filter>
+    <Filter Include="Reference">
+      <UniqueIdentifier>{813426e5-7115-4502-bf3e-1edf14b1a754}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Project3.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="paintWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ListModel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -62,6 +71,9 @@
     <QtUic Include="paintWidget.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="ListModel.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtTranslation Include="project-3_zh.ts">
@@ -75,5 +87,16 @@
     <ClInclude Include="Parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MainHeader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Project3 grading sheet.docx">
+      <Filter>Reference</Filter>
+    </None>
+    <None Include="Project3-Equation Drawing.pptx">
+      <Filter>Reference</Filter>
+    </None>
   </ItemGroup>
 </Project>

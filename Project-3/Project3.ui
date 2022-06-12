@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>784</width>
+    <width>928</width>
     <height>520</height>
    </rect>
   </property>
@@ -29,6 +29,9 @@
          <width>500</width>
          <height>500</height>
         </size>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -54,21 +57,18 @@
         </widget>
        </item>
        <item>
-        <widget class="QListView" name="listView">
-         <property name="font">
-          <font>
-           <family>Microsoft JhengHei UI</family>
-          </font>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QListWidget" name="listWidget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>400</width>
+           <height>0</height>
+          </size>
          </property>
         </widget>
        </item>
