@@ -1,7 +1,7 @@
 #include "Project3.h"
 
 Color Project3::colorCount;
-
+QList<ListModel*> Project3::list;
 
 Project3::Project3(QWidget *parent)
     : QWidget(parent)
@@ -81,4 +81,9 @@ void Project3::removeItem(int index)
     for (int i = 0; i < list.size(); i++) {
         list[i]->setRow(i);
     }
+}
+
+QList<ListModel*> Project3::getModelList()
+{
+    return list;
 }

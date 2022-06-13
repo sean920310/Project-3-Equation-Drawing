@@ -112,4 +112,5 @@ void ListModel::on_showBtn_clicked()
 void ListModel::on_closeBtn_clicked()
 {
     this->parent->removeItem(row);
+    this->~ListModel();
 }

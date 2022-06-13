@@ -1,5 +1,6 @@
 #pragma once
 #include <QMessageBox>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QLineEdit>
 #include <QPushButton>
@@ -10,6 +11,9 @@
 #include <QString>
 #include <QDebug>
 #include <sstream>
+#include <vector>
+#include <string>
+#include <stack>
 
 #define RED "QLabel { background-color : red;}"
 #define BLUE "QLabel { background-color : blue;}"

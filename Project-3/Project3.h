@@ -22,12 +22,12 @@ class Project3 : public QWidget
 public:
     Project3(QWidget *parent = Q_NULLPTR);
     void removeItem(int index);
-
+    static QList<ListModel*> getModelList();
 private slots:
     void on_addPushButton_clicked();
 
 private:
     Ui::Project3Class ui;
-    QList<ListModel*> list;
+    static QList<ListModel*> list;
     static Color colorCount;
 };
