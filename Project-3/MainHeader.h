@@ -9,6 +9,7 @@
 #include <QIcon>
 #include <QString>
 #include <QDebug>
+#include <sstream>
 
 #define RED "QLabel { background-color : red;}"
 #define BLUE "QLabel { background-color : blue;}"
