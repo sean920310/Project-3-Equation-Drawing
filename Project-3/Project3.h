@@ -21,14 +21,13 @@ class Project3 : public QWidget
 
 public:
     Project3(QWidget *parent = Q_NULLPTR);
-    void removeItem(QListWidgetItem& toRemove);
+    void removeItem(int index);
 
 private slots:
     void on_addPushButton_clicked();
-    void on_listWidget_itemChange();
 
 private:
     Ui::Project3Class ui;
-    QList<QListWidgetItem*> list;
+    QList<ListModel*> list;
     static Color colorCount;
 };

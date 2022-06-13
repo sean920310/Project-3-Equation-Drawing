@@ -1,9 +1,9 @@
 #pragma once
 #include <QWidget>
-
 #include "MainHeader.h"
 
 namespace Ui { class ListModel; };
+class Project3;
 
 class ListModel : public QWidget
 {
@@ -13,7 +13,10 @@ public:
 	ListModel(QWidget* parent = Q_NULLPTR);
 	~ListModel();
 
+	void setParent(Project3* parent);
 	void setEquationColor(Color& color);
+	void setRow(int num);
+	int getRow();
 	EquationData getData();
 
 private slots:
@@ -22,6 +25,9 @@ private slots:
 
 private:
 	Ui::ListModel* ui;
+	Project3* parent;
 	bool visible = true;
 	Color color;
+	int row;
 };
+

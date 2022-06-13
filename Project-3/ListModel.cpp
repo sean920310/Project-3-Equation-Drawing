@@ -1,4 +1,5 @@
 #include "ListModel.h"
+#include "Project3.h"
 #include "ui_ListModel.h"
 
 QString colorStyleSheet(Color& color)
@@ -45,7 +46,6 @@ ListModel::ListModel(QWidget *parent)
 {
 	ui = new Ui::ListModel();
 	ui->setupUi(this);
-
     //showBtn
     QIcon showIcon(INVISIBLE_PATH);
     ui->showBtn->setIcon(showIcon);
@@ -62,10 +62,25 @@ ListModel::~ListModel()
 	delete ui;
 }
 
+void ListModel::setParent(Project3* parent)
+{
+    this->parent = parent;
+}
+
 void ListModel::setEquationColor(Color& color)
 {
     this->color = color;
     ui->label->setStyleSheet(colorStyleSheet(color));
+}
+
+void ListModel::setRow(int num)
+{
+    this->row = num;
+}
+
+int ListModel::getRow()
+{
+    return this->row;
 }
 
 EquationData ListModel::getData()
@@ -96,5 +111,5 @@ void ListModel::on_showBtn_clicked()
 
 void ListModel::on_closeBtn_clicked()
 {
-    this->~ListModel();
+    this->parent->removeItem(row);
 }

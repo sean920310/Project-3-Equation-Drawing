@@ -2,6 +2,7 @@
 
 Color Project3::colorCount;
 
+
 Project3::Project3(QWidget *parent)
     : QWidget(parent)
 {
@@ -11,6 +12,7 @@ Project3::Project3(QWidget *parent)
     srand(time(0));
     colorCount = (Color)(rand() % 7);
 
+
 }
 
 void Project3::on_addPushButton_clicked()
@@ -19,6 +21,8 @@ void Project3::on_addPushButton_clicked()
     auto item = new QListWidgetItem();
     ListModel* model = new ListModel();
     model->setEquationColor(colorCount);
+    model->setRow(list.size());
+    model->setParent(this);
     /*
     
     QWidget* model = new QWidget();
@@ -66,9 +70,15 @@ void Project3::on_addPushButton_clicked()
 
     ui.listWidget->addItem(item);
     ui.listWidget->setItemWidget(item, model);
+    list.push_back(model);
 }
 
-void Project3::on_listWidget_itemChange()
+void Project3::removeItem(int index)
 {
-    qDebug() << "event";
+    list.erase(list.begin() + index);
+    delete ui.listWidget->item(index);
+
+    for (int i = 0; i < list.size(); i++) {
+        list[i]->setRow(i);
+    }
 }
