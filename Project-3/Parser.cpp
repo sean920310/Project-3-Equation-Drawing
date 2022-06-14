@@ -306,10 +306,21 @@ int Parser::calculate(vector<NumWithName>& vars, vector<double>& numbers)
 			}
 			else
 			{
-				bool findVar = false;
+				bool findVar = false,negtive=false;
+				if (postInput[i][0] == '-')
+				{
+					negtive = true;
+					postInput[i] = postInput[i].substr(1);
+				}
+				else if(postInput[i][0] == '+')
+					postInput[i] = postInput[i].substr(1);
+
 				for (const auto& var : vars) {
 					if (postInput[i] == var.name) {
-						numbers.push_back(var.num);
+						if (negtive)
+							numbers.push_back(var.num * -1);
+						else
+							numbers.push_back(var.num);
 						findVar = true;
 						break;
 					}

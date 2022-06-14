@@ -33,6 +33,8 @@ QColor toQColor(Color color)
 	}
 }
 
+
+
 paintWidget::paintWidget(QWidget* parent)
 	: QWidget(parent)
 {
@@ -54,7 +56,7 @@ paintWidget::~paintWidget()
 
 void paintWidget::paintEvent(QPaintEvent* e)
 {
-	//x,y to w,h -> (i - x_l)* (w / (x_r - x_l)), (y - y_u)* (h / (y_d - y_u))
+	//x,y to w,h -> (x - x_l)* (w / (x_r - x_l)), (y - y_u)* (h / (y_d - y_u))
 
 	//draw x,y axis
 
@@ -72,7 +74,12 @@ void paintWidget::paintEvent(QPaintEvent* e)
 			painter.drawLine(0, i * (h / 10), w, i * (h / 10));
 			std::stringstream ss;
 			ss << i * ((y_d - y_u) / 10) + y_u;	//y禸计
-			painter.drawText(w / 2 + 5, i * (h / 10) + 10, QString::fromStdString(ss.str()));
+			//painter.drawText(w / 2 + 5, i * (h / 10) + 10, QString::fromStdString(ss.str()));
+			if (x_r < 0 || x_l>0)
+				painter.drawText(0, i * (h / 10) + 10, QString::fromStdString(ss.str()));
+			else
+				painter.drawText((0 - x_l) * (w / (x_r - x_l)) + 5, i * (h / 10) + 10, QString::fromStdString(ss.str()));
+
 		}
 	}
 	else
@@ -84,12 +91,15 @@ void paintWidget::paintEvent(QPaintEvent* e)
 		painter.setPen(QPen(Qt::black, 0.5));
 		for (int i = -9; i < 10; i++)
 		{
-			if (i!=0)
+			if (i != 0)
 			{
 				painter.drawLine(0, (i * (y_u - y_d) / 10 - y_u) * (h / (y_d - y_u)), w, (i * (y_u - y_d) / 10 - y_u) * (h / (y_d - y_u)));
 				std::stringstream ss;
-				ss << i * ((y_d - y_u) / 10) + y_u;	//y禸计
-				painter.drawText(w / 2 + 5, i * (h / 10) + 10, QString::fromStdString(ss.str()));
+				ss << i * ((y_u - y_d) / 10.f);	//y禸计
+				if (x_r < 0 || x_l>0)
+					painter.drawText(0, (i * (y_u - y_d) / 10 - y_u) * (h / (y_d - y_u)) + 10, QString::fromStdString(ss.str()));
+				else
+					painter.drawText((0 - x_l) * (w / (x_r - x_l)) + 5, (i * (y_u - y_d) / 10 - y_u) * (h / (y_d - y_u))+10, QString::fromStdString(ss.str()));
 			}
 
 		}
@@ -104,7 +114,11 @@ void paintWidget::paintEvent(QPaintEvent* e)
 			painter.drawLine(i * (w / 10), 0, i * (w / 10), h);
 			std::stringstream ss;
 			ss << i * ((x_r - x_l) / 10) + x_l;	//x禸计
-			painter.drawText(i * (w / 10) + 5, h / 2 + 10, QString::fromStdString(ss.str()));
+			//painter.drawText(i * (w / 10) + 5, h / 2 + 10, QString::fromStdString(ss.str()));
+			if (y_u < 0 || y_d>0)
+				painter.drawText(i * (w / 10) + 5, h-5, QString::fromStdString(ss.str()));
+			else
+				painter.drawText(i * (w / 10) + 5, (0 - y_u) * (h / (y_d - y_u)) + 15, QString::fromStdString(ss.str()));
 
 		}
 	}
@@ -114,16 +128,18 @@ void paintWidget::paintEvent(QPaintEvent* e)
 		painter.setPen(QPen(Qt::black, 3));
 		painter.drawLine((0 - x_l) * (w / (x_r - x_l)), 0, (0 - x_l) * (w / (x_r - x_l)), h);
 
-
 		painter.setPen(QPen(Qt::black, 0.5));
 		for (int i = -9; i < 10; i++)
 		{
-			if (i!=0)
+			if (i != 0)
 			{
 				painter.drawLine((i * (x_r - x_l) / 10 - x_l) * (w / (x_r - x_l)), 0, (i * (x_r - x_l) / 10 - x_l) * (w / (x_r - x_l)), h);
 				std::stringstream ss;
-				ss << i * ((x_r - x_l) / 10) + x_l;	//x禸计
-				painter.drawText(i * (w / 10) + 5, h / 2 + 10, QString::fromStdString(ss.str()));
+				ss << i * ((x_r - x_l) / 10.f);	//x禸计
+				if (y_u < 0 || y_d>0)
+					painter.drawText((i * (x_r - x_l) / 10 - x_l) * (w / (x_r - x_l)) + 5, h - 5, QString::fromStdString(ss.str()));
+				else
+					painter.drawText((i * (x_r - x_l) / 10 - x_l) * (w / (x_r - x_l))+5, (0 - y_u) * (h / (y_d - y_u)) + 15, QString::fromStdString(ss.str()));
 			}
 		}
 	}
@@ -204,10 +220,11 @@ void paintWidget::mouseMoveEvent(QMouseEvent* e)
 		{
 			QPointF delta = e->localPos() - mouseLastPos;
 			mouseLastPos = e->localPos();
-			x_r -= delta.x() / w * (x_r - x_l);
-			x_l -= delta.x() / w * (x_r - x_l);
-			y_u += delta.y() / h * (y_u - y_d);
-			y_d += delta.y() / h * (y_u - y_d);
+			double dx = delta.x() / w * (x_r - x_l), dy = delta.y() / h * (y_u - y_d);
+			x_r -= dx;
+			x_l -= dx;
+			y_u += dy;
+			y_d += dy;
 		}
 	}
 	this->update();
