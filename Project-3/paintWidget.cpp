@@ -156,7 +156,7 @@ void paintWidget::paintEvent(QPaintEvent* e)
 		if (model->getData().visible)
 		{
 			QPoint lastPoint;
-			for (double i = x_l; i < x_r; i += (x_r - x_l) / 1000)
+			for (double i = x_l; i < x_r; i += (x_r - x_l) / 100)
 			{
 				for (auto& var : vars)
 				{
