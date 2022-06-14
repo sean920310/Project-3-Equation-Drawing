@@ -50,7 +50,7 @@ vector<string> Parser::Postfix(string inp)
 
 	for (auto c : inp)
 	{
-		if(c!=' ')
+		if (c != ' ')
 			in = in + c;
 	}
 
@@ -234,8 +234,8 @@ int Parser::calculate(vector<NumWithName>& vars, vector<double>& numbers)
 		}
 		else if (postInput[i] == "*") {					//乘法
 			if (numbers.size() < 2)
-				return 1; 
-				//throw "輸入錯誤，缺少數值";
+				return 1;
+			//throw "輸入錯誤，缺少數值";
 			double num1, num2;
 			num2 = numbers.at(numbers.size() - 1);
 			numbers.erase(numbers.end() - 1);
@@ -246,8 +246,8 @@ int Parser::calculate(vector<NumWithName>& vars, vector<double>& numbers)
 		}
 		else if (postInput[i] == "/") {					//除法
 			if (numbers.size() < 2)
-				return 1; 
-				//throw "輸入錯誤，缺少數值";
+				return 1;
+			//throw "輸入錯誤，缺少數值";
 			double num1, num2;
 			num2 = numbers.at(numbers.size() - 1);
 			numbers.erase(numbers.end() - 1);
@@ -255,16 +255,16 @@ int Parser::calculate(vector<NumWithName>& vars, vector<double>& numbers)
 			numbers.erase(numbers.end() - 1);
 
 			if (num2 == 0)
-				return 1; 
-				//throw "被除數不能等於0";
+				return 1;
+			//throw "被除數不能等於0";
 
 			numbers.push_back(num1 / num2);
 
 		}
 		else if (postInput[i] == "^") {					//冪次
 			if (numbers.size() < 2)
-				return 1; 
-				//throw "輸入錯誤，缺少數值";
+				return 1;
+			//throw "輸入錯誤，缺少數值";
 			double num1, num2;
 			num2 = numbers.at(numbers.size() - 1);
 			numbers.erase(numbers.end() - 1);
@@ -273,13 +273,13 @@ int Parser::calculate(vector<NumWithName>& vars, vector<double>& numbers)
 
 			if (isnan(pow(num1, num2)))
 				return 1;
-				//throw "NaN";
+			//throw "NaN";
 			numbers.push_back(pow(num1, num2));
 		}
 		else if (postInput[i] == "=") {
 			if (numbers.size() < 2)			//assign
 				return 1;
-				//throw "輸入錯誤，缺少數值";
+			//throw "輸入錯誤，缺少數值";
 			double num1, num2;
 			num2 = numbers.at(numbers.size() - 1);
 			numbers.erase(numbers.end() - 1);
@@ -306,13 +306,13 @@ int Parser::calculate(vector<NumWithName>& vars, vector<double>& numbers)
 			}
 			else
 			{
-				bool findVar = false,negtive=false;
+				bool findVar = false, negtive = false;
 				if (postInput[i][0] == '-')
 				{
 					negtive = true;
 					postInput[i] = postInput[i].substr(1);
 				}
-				else if(postInput[i][0] == '+')
+				else if (postInput[i][0] == '+')
 					postInput[i] = postInput[i].substr(1);
 
 				for (const auto& var : vars) {

@@ -1,5 +1,6 @@
 #pragma once
 #include <QMessageBox>
+#include <QTimer>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QLineEdit>
@@ -9,6 +10,7 @@
 #include <QListView>
 #include <QIcon>
 #include <QString>
+#include <QVector>
 #include <QDebug>
 #include <sstream>
 #include <vector>

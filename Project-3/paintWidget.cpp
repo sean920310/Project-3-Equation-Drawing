@@ -41,6 +41,9 @@ paintWidget::paintWidget(QWidget* parent)
 	ui = new Ui::paintWidget();
 	ui->setupUi(this);
 	setMouseTracking(true);
+	timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+	timer->start(1000);
 
 	x_r = 10;
 	x_l = -10;
@@ -99,7 +102,7 @@ void paintWidget::paintEvent(QPaintEvent* e)
 				if (x_r < 0 || x_l>0)
 					painter.drawText(0, (i * (y_u - y_d) / 10 - y_u) * (h / (y_d - y_u)) + 10, QString::fromStdString(ss.str()));
 				else
-					painter.drawText((0 - x_l) * (w / (x_r - x_l)) + 5, (i * (y_u - y_d) / 10 - y_u) * (h / (y_d - y_u))+10, QString::fromStdString(ss.str()));
+					painter.drawText((0 - x_l) * (w / (x_r - x_l)) + 5, (i * (y_u - y_d) / 10 - y_u) * (h / (y_d - y_u)) + 10, QString::fromStdString(ss.str()));
 			}
 
 		}
@@ -116,7 +119,7 @@ void paintWidget::paintEvent(QPaintEvent* e)
 			ss << i * ((x_r - x_l) / 10) + x_l;	//x軸上數值
 			//painter.drawText(i * (w / 10) + 5, h / 2 + 10, QString::fromStdString(ss.str()));
 			if (y_u < 0 || y_d>0)
-				painter.drawText(i * (w / 10) + 5, h-5, QString::fromStdString(ss.str()));
+				painter.drawText(i * (w / 10) + 5, h - 5, QString::fromStdString(ss.str()));
 			else
 				painter.drawText(i * (w / 10) + 5, (0 - y_u) * (h / (y_d - y_u)) + 15, QString::fromStdString(ss.str()));
 
@@ -139,24 +142,29 @@ void paintWidget::paintEvent(QPaintEvent* e)
 				if (y_u < 0 || y_d>0)
 					painter.drawText((i * (x_r - x_l) / 10 - x_l) * (w / (x_r - x_l)) + 5, h - 5, QString::fromStdString(ss.str()));
 				else
-					painter.drawText((i * (x_r - x_l) / 10 - x_l) * (w / (x_r - x_l))+5, (0 - y_u) * (h / (y_d - y_u)) + 15, QString::fromStdString(ss.str()));
+					painter.drawText((i * (x_r - x_l) / 10 - x_l) * (w / (x_r - x_l)) + 5, (0 - y_u) * (h / (y_d - y_u)) + 15, QString::fromStdString(ss.str()));
 			}
 		}
 	}
 
 	//draw equation
 	vector<NumWithName> vars;
-	NumWithName x;
+	NumWithName x, y;
 	x.name = "x";
 	x.num = 0;
+	y.name = "y";
+	y.num = 0;
 	vars.push_back(x);
 	for (auto model : Project3::getModelList())
 	{
 		painter.setPen(QPen(toQColor(model->getData().color), 2));
 		if (model->getData().visible)
 		{
-			QPoint lastPoint;
-			for (double i = x_l; i < x_r; i += (x_r - x_l) / 100)
+			QPointF lastPoint;
+			QLineF lastLine;
+			Parser equation(model->getData().equation.toStdString());
+			bool lock = false;
+			for (double i = x_l; i < x_r; i += (x_r - x_l) / 500)
 			{
 				for (auto& var : vars)
 				{
@@ -164,7 +172,6 @@ void paintWidget::paintEvent(QPaintEvent* e)
 						var.num = i;
 				}
 				vector<double> numbers;
-				Parser equation(model->getData().equation.toStdString());
 
 				if (!equation.calculate(vars, numbers))
 				{
@@ -172,17 +179,33 @@ void paintWidget::paintEvent(QPaintEvent* e)
 					{
 						double y = numbers.at(0);
 						if (lastPoint.isNull())
-							lastPoint = QPoint((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
+							lastPoint = QPointF((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
 						else
 						{
-							painter.drawLine(lastPoint, QPoint((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u))));
-							lastPoint = QPoint((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
+							double lastY = lastPoint.y() * (y_d - y_u) / h + y_u, nowY = y;
+							QPointF nowPoint((i - x_l)* (w / (x_r - x_l)), (y - y_u)* (h / (y_d - y_u)));
+							QLineF nowLine(lastPoint, nowPoint);
+							
+							double degree = nowLine.angleTo(lastLine);
+							//if (abs(i) <3)
+								//qDebug() <<i <<' ' << degree;
+							if (degree >90&&degree<270 )	//判斷是否為斷層
+								lock = !lock;
+
+
+							if (!lock)
+								painter.drawLine(nowLine);
+
+
+							//if (abs(i) < 1);
+								//qDebug() << "last: " << lastY << "| now: " << nowY;
+							lastPoint = nowPoint;
+							lastLine = nowLine;
 						}
 						//painter.drawPoint((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
 					}
 				}
 			}
-
 		}
 	}
 }

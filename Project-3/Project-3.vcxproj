@@ -87,7 +87,6 @@
   <ItemGroup>
     <ClCompile Include="ListModel.cpp" />
     <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="Viewer.cpp" />
     <QtRcc Include="Project3.qrc" />
     <QtUic Include="ListModel.ui" />
     <QtUic Include="paintWidget.ui" />
@@ -107,7 +106,6 @@
     <QtMoc Include="ListModel.h" />
     <ClInclude Include="MainHeader.h" />
     <ClInclude Include="Parser.h" />
-    <ClInclude Include="Viewer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Project3 grading sheet.docx" />

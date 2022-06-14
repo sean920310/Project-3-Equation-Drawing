@@ -23,6 +23,7 @@ protected:
 
 private:
 	Ui::paintWidget* ui;
+	QTimer* timer;
 	double x_r, x_l, y_u, y_d;
 	double scale = 1;
 	QPointF mouseLastPos;

@@ -23,49 +23,7 @@ void Project3::on_addPushButton_clicked()
     model->setEquationColor(colorCount);
     model->setRow(list.size());
     model->setParent(this);
-    /*
-    
-    QWidget* model = new QWidget();
-    QLabel* color = new QLabel();
-    QLineEdit* lineEdit = new QLineEdit();
-    QPushButton* showBtn = new QPushButton();
-    QPushButton* closeBtn = new QPushButton();
-    QHBoxLayout* modelLayout = new QHBoxLayout();
-
-    //*color
-    color->setStyleSheet(colorStyleSheet(colorCount));
-    color->setMinimumSize(30, 30);
-
-    //*lineEdit
-    QFont font;
-    font.setFamily("Microsoft YaHei");
-    font.setPixelSize(20);
-    lineEdit->setFont(font);
-
-    //*show
-    if (1)
-    {
-        QIcon visible(VISIBLE_PATH);
-        showBtn->setIcon(visible);
-        showBtn->setIconSize(QSize(25, 25));
-    }
-    else
-    {
-        QIcon invisible(INVISIBLE_PATH);
-        showBtn->setIcon(invisible);
-    }
-
-    //*close
-
-    modelLayout->addWidget(color);
-    modelLayout->addWidget(lineEdit);
-    modelLayout->addWidget(showBtn);
-    modelLayout->addWidget(closeBtn);
-    
-    modelLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
-    model->setLayout(modelLayout);
-    */
-
+   
     item->setSizeHint(model->sizeHint());
 
     ui.listWidget->addItem(item);
