@@ -155,6 +155,7 @@ void paintWidget::paintEvent(QPaintEvent* e)
 	y.name = "y";
 	y.num = 0;
 	vars.push_back(x);
+	vars.push_back(y);
 	for (auto model : Project3::getModelList())
 	{
 		painter.setPen(QPen(toQColor(model->getData().color), 2));
@@ -183,13 +184,13 @@ void paintWidget::paintEvent(QPaintEvent* e)
 						else
 						{
 							double lastY = lastPoint.y() * (y_d - y_u) / h + y_u, nowY = y;
-							QPointF nowPoint((i - x_l)* (w / (x_r - x_l)), (y - y_u)* (h / (y_d - y_u)));
+							QPointF nowPoint((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
 							QLineF nowLine(lastPoint, nowPoint);
-							
+
 							double degree = nowLine.angleTo(lastLine);
 							//if (abs(i) <3)
 								//qDebug() <<i <<' ' << degree;
-							if (degree >90&&degree<270 )	//§PÂ_¬O§_¬°Â_¼h
+							if (degree > 170 && degree < 190)	//§PÂ_¬O§_¬°Â_¼h
 								lock = !lock;
 
 

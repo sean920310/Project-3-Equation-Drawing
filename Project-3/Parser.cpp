@@ -3,18 +3,41 @@
 Parser::Parser(string input)
 {
 	this->input = input;
+
+	while (this->input.find("sin")!=string::npos)
+	{
+		auto i = this->input.find("sin");
+		this->input.replace(i, 3,"@");
+	}
+	while(this->input.find("cos") != string::npos)
+	{
+		auto i = this->input.find("cos");
+		this->input.replace(i, 3, "#");
+	}
+	while(this->input.find("tan") != string::npos)
+	{
+		auto i = this->input.find("tan");
+		this->input.replace(i, 3, "$");
+	}
+
+	/*if (this->input.find("y") == string::npos&&this->input.find("=")==string::npos)
+	{
+		this->input = "y=" + this->input;
+		NumWithName y("y",0);
+		vars.push_back(y);
+	}*/
+
 }
 
-vector<int> Parser::findd(char in)
-{
+vector<int> Parser::findd(char in) {
 	vector<int> out;
 	out.resize(2);//0數字1權重
 	int time = 0;
-	char opr[12] = { '(',')','=','=','+','-','*','/','^','^','!','!' };
-	for (int i = 0; i < 12 + 1; i++) {
+	char opr[15] = { '(',')','=','=','+','-','*','/','^','^','!','!','@','#','$' };
+	for (int i = 0; i < 15 + 1; i++) {
 
 
-		if (i < 12) {
+		if (i < 15) {
 			if (in == opr[i]) {
 				out.at(0) = i;
 				out.at(1) = i / 2;
@@ -28,31 +51,27 @@ vector<int> Parser::findd(char in)
 		}
 		out.at(1) = i / 2;
 	}
+	if (out.at(0) == 14) {
+		out.at(1) = 7;
+	}
 	return  out;
 
 }
 
-vector<string> Parser::Postfix(string inp)
-{
+vector<string> Parser::Postfix(string inp) {
 	vector<int> number;
 	vector<int> lastnumber;
 	vector<string> out;
 	stack<int> stack;
 	bool wronginput = false;
 	bool isnegetive = false;
-	string opr[12] = { "(",")","=","=", "+", "-", "*", "/","^","^","!","!" };
+	string opr[15] = { "(",")","=","=", "+", "-", "*", "/","^","^","!","!","@","#","$" };
 	string temp;
 
 	lastnumber.resize(2); lastnumber.at(0) = -1; lastnumber.at(1) = -1;
 
-	string in = "";
+	string in = inp;
 	string plus;
-
-	for (auto c : inp)
-	{
-		if (c != ' ')
-			in = in + c;
-	}
 
 	int index = 0;
 	for (int i = 0; i < in.length(); i++) {
@@ -287,6 +306,36 @@ int Parser::calculate(vector<NumWithName>& vars, vector<double>& numbers)
 			numbers.erase(numbers.end() - 1);
 
 			num1 = num2;
+		}
+		else if (postInput[i] == "@") {					//sin
+			if (numbers.size() < 1)
+				return 1;
+			//throw "輸入錯誤，缺少數值";
+			double num1 = numbers.at(numbers.size() - 1);
+			numbers.erase(numbers.end() - 1);
+
+			numbers.push_back(sin(num1));
+		}
+		else if (postInput[i] == "#") {					//cos
+		if (numbers.size() < 1)
+			return 1;
+		//throw "輸入錯誤，缺少數值";
+		double num1 = numbers.at(numbers.size() - 1);
+		numbers.erase(numbers.end() - 1);
+
+		numbers.push_back(cos(num1));
+		}
+		else if (postInput[i] == "$") {					//tan
+		if (numbers.size() < 1)
+			return 1;
+		//throw "輸入錯誤，缺少數值";
+		double num1 = numbers.at(numbers.size() - 1);
+		numbers.erase(numbers.end() - 1);
+
+		if (isnan(tan(num1)))
+			return 1;
+		//throw "NaN";
+		numbers.push_back(tan(num1));
 		}
 		else
 		{
