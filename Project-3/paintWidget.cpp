@@ -170,7 +170,7 @@ void paintWidget::paintEvent(QPaintEvent* e)
 		{
 			vector<double> numbers;
 			NumWithName setX("x", i), getY("y", 0);
-			int code = equation.calculate(setX, getY);
+			int code = equation.calculate(setX, getY);			//設定變數和結果
 			if (!code)
 			{
 				model->error(false);
@@ -205,12 +205,13 @@ void paintWidget::paintEvent(QPaintEvent* e)
 						lastLine = nowLine;
 					}
 				}
-				else if (code == -1)
-				{
-					model->error(true);
-					break;
-				}
 			}
+			else if (code == -1)
+			{
+				model->error(true);
+				break;
+			}
+
 		}
 	}
 }

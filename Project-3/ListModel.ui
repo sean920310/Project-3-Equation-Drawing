@@ -22,8 +22,19 @@
        <height>30</height>
       </size>
      </property>
+     <property name="font">
+      <font>
+       <family>Calibri</family>
+       <pointsize>15</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
