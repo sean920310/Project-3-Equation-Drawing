@@ -18,6 +18,7 @@ public:
 	void setRow(int num);
 	int getRow();
 	EquationData getData();
+	void error(bool isError);
 
 private slots:
 	void on_showBtn_clicked();

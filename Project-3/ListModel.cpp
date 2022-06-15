@@ -93,6 +93,14 @@ EquationData ListModel::getData()
     return data;
 }
 
+void ListModel::error(bool isError)
+{
+    if (isError)
+        ui->label->setText("E");
+    else
+        ui->label->setText("");
+}
+
 void ListModel::on_showBtn_clicked()
 {
     visible = !visible;

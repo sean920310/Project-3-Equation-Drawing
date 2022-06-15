@@ -156,55 +156,59 @@ void paintWidget::paintEvent(QPaintEvent* e)
 	y.num = 0;
 	vars.push_back(x);
 	vars.push_back(y);
+
+	Parser equation;
 	for (auto model : Project3::getModelList())
 	{
 		painter.setPen(QPen(toQColor(model->getData().color), 2));
-		if (model->getData().visible)
+
+		equation.setInput(model->getData().equation.toStdString());
+		QPointF lastPoint;
+		QLineF lastLine;
+		bool lock = false;
+		for (double i = x_l; i < x_r; i += (x_r - x_l) / 500)
 		{
-			QPointF lastPoint;
-			QLineF lastLine;
-			Parser equation(model->getData().equation.toStdString());
-			bool lock = false;
-			for (double i = x_l; i < x_r; i += (x_r - x_l) / 500)
+			vector<double> numbers;
+			NumWithName setX("x", i), getY("y", 0);
+			int code = equation.calculate(setX, getY);
+			if (!code)
 			{
-				for (auto& var : vars)
-				{
-					if (var.name == "x")
-						var.num = i;
-				}
-				vector<double> numbers;
+				model->error(false);
 
-				if (!equation.calculate(vars, numbers))
+
+				if (model->getData().visible)
 				{
-					if (numbers.size())
+					double y = getY.num; //得到結果
+
+					if (lastPoint.isNull())
+						lastPoint = QPointF((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
+					else
 					{
-						double y = numbers.at(0);
-						if (lastPoint.isNull())
-							lastPoint = QPointF((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
-						else
-						{
-							double lastY = lastPoint.y() * (y_d - y_u) / h + y_u, nowY = y;
-							QPointF nowPoint((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
-							QLineF nowLine(lastPoint, nowPoint);
+						double lastY = lastPoint.y() * (y_d - y_u) / h + y_u, nowY = y;
+						QPointF nowPoint((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
+						QLineF nowLine(lastPoint, nowPoint);
 
-							double degree = nowLine.angleTo(lastLine);
-							//if (abs(i) <3)
-								//qDebug() <<i <<' ' << degree;
-							if (degree > 170 && degree < 190)	//判斷是否為斷層
-								lock = !lock;
+						double degree = nowLine.angleTo(lastLine);
+						//if (abs(i) <3)
+							//qDebug() <<i <<' ' << degree;
+						if (degree > 170 && degree < 190)	//判斷是否為斷層
+							lock = !lock;
 
 
-							if (!lock)
-								painter.drawLine(nowLine);
+						if (!lock)
+							painter.drawLine(nowLine);
 
 
-							//if (abs(i) < 1);
-								//qDebug() << "last: " << lastY << "| now: " << nowY;
-							lastPoint = nowPoint;
-							lastLine = nowLine;
-						}
-						//painter.drawPoint((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
+						//if (abs(i) < 1);
+							//qDebug() << "last: " << lastY << "| now: " << nowY;
+						lastPoint = nowPoint;
+						lastLine = nowLine;
 					}
+				}
+				else if (code == -1)
+				{
+					model->error(true);
+					break;
 				}
 			}
 		}

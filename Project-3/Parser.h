@@ -7,7 +7,7 @@ typedef struct NumWithName
 	string name;
 	double num;
 
-	NumWithName() {};
+	NumWithName():name(""),num(0){};
 	NumWithName(string name,double num):name(name),num(num) {};
 
 
@@ -19,13 +19,16 @@ class Parser
 {
 private:
 	string input;
-	vector<NumWithName> vars;
+	map<string,double> vars;
 public:
 	Parser(string input);
+	Parser();
 
+	void setInput(string input);
+	bool canUse(NumWithName var);	//判斷是否為數字或是已存在的變數
 	vector<int> findd(char in);
 	vector<string> Postfix(string inp);
-	int calculate(vector<NumWithName>& vars, vector<double>& numbers);
+	int calculate(NumWithName& setVar,NumWithName& getVar);
 };
 
 

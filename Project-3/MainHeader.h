@@ -15,6 +15,7 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <map>
 #include <stack>
 
 #define RED "QLabel { background-color : red;}"
