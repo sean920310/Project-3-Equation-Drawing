@@ -377,7 +377,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 				return -1; //找不到變數
 
 			if (num2.num == 0)
-				return 1;
+				return -1;
 			//throw "被除數不能等於0";
 			result.num = num1.num / num2.num;
 			tempVars.push_back(result);
@@ -511,6 +511,8 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 		}
 	}
 	getVar.num = this->vars[getVar.name];
+	if (tempVars.size() > 1)
+		return -1;
 	if (input.find(getVar.name) == string::npos)
 		return 1;
 	return 0;
