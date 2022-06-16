@@ -277,7 +277,9 @@ void paintWidget::paintEvent(QPaintEvent* e)
 		}
 		else
 		{
-
+			NumWithName setX("x", 0), getY("y", 0);
+			int code = equation.calculate(setX, getY);
+			model->error(code == -1);
 		}
 	}
 }
