@@ -211,6 +211,10 @@ void paintWidget::paintEvent(QPaintEvent* e)
 				model->error(true);
 				break;
 			}
+			else if (code == 1)
+			{
+				model->error(false);
+			}
 
 		}
 	}
@@ -261,6 +265,9 @@ void paintWidget::mouseMoveEvent(QMouseEvent* e)
 
 void paintWidget::wheelEvent(QWheelEvent* event)
 {
+	//int mX = event->x(), mY = event->y();
+	double dx = ((event->x() * (x_r - x_l) / this->width() + x_l))*  (0.3),
+		dy = ((event->y() * (y_d - y_u) / this->height() + y_u)) *  (0.3);
 	if (event->delta() > 0)
 	{
 		scale /= 1.3;
@@ -268,6 +275,12 @@ void paintWidget::wheelEvent(QWheelEvent* event)
 		x_l /= 1.3;
 		y_u /= 1.3;
 		y_d /= 1.3;
+
+		x_r += dx;
+		x_l += dx;
+		y_d += dy;
+		y_u += dy;
+
 		qDebug() << u8"¤Wºu" << scale;
 	}
 	else
@@ -277,6 +290,12 @@ void paintWidget::wheelEvent(QWheelEvent* event)
 		x_l *= 1.3;
 		y_u *= 1.3;
 		y_d *= 1.3;
+
+		x_r -= dx;
+		x_l -= dx;
+		y_d -= dy;
+		y_u -= dy;
+
 		qDebug() << u8"¤Uºu" << scale;
 	}
 	this->update();

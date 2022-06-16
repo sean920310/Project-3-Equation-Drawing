@@ -499,5 +499,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 		}
 	}
 	getVar.num = this->vars[getVar.name];
+	if (input.find(getVar.name) == string::npos)
+		return 1;
 	return 0;
 }
