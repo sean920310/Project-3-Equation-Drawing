@@ -21,7 +21,7 @@ Parser::Parser(string input)
 		this->input.replace(i, 3, "$");
 	}
 
-	if (this->input.find("y") == string::npos&&this->input.find("=")==string::npos)
+	if (this->input.find("y") == string::npos && this->input.find("=") == string::npos)
 	{
 		this->input = "y=" + this->input;
 	}
@@ -34,8 +34,8 @@ Parser::Parser()
 
 void Parser::setInput(string input)
 {
-	string temp="";
-	
+	string temp = "";
+
 	for (const char& c : input)
 	{
 		if (c != ' ')
@@ -60,7 +60,7 @@ void Parser::setInput(string input)
 		this->input.replace(i, 3, "$");
 	}
 
-	if (this->input.find("y") == string::npos&&this->input.find("=")==string::npos)
+	if (this->input.find("y") == string::npos && this->input.find("=") == string::npos)
 	{
 		this->input = "y=" + this->input;
 	}
@@ -85,6 +85,18 @@ bool Parser::canUse(NumWithName var)
 	else
 	{
 		return (this->vars.count(var.name));	//琩高跑计琌
+	}
+}
+
+int Parser::type()
+{
+	if (input[0] == 'y' && input[1] == '=')
+		return 0;
+	else if (input[0] == 'x' && input[1] == '=')
+		return 1;
+	else
+	{
+		return 2;
 	}
 }
 
@@ -364,17 +376,17 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 			if (!canUse(num2))
 				return -1; //тぃ跑计
 
-			if (num2.num==0)
+			if (num2.num == 0)
 				return 1;
 			//throw "砆埃计ぃ单0";
-			result.num = num1.num/ num2.num;
+			result.num = num1.num / num2.num;
 			tempVars.push_back(result);
 		}
 		else if (postInput[i] == "^") {					//经Ω
 			if (tempVars.size() < 2)
 				return -1;
 			//throw "块岿粇ぶ计";
-			NumWithName num1, num2,result;
+			NumWithName num1, num2, result;
 			num2 = tempVars.back();
 			tempVars.pop_back();
 			num1 = tempVars.back();
@@ -409,7 +421,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 				return -1; //throw "块岿粇ぶ计";
 			NumWithName num1 = tempVars.back(), result;
 			tempVars.pop_back();
-			
+
 			if (!canUse(num1))
 				return -1; //тぃ跑计
 

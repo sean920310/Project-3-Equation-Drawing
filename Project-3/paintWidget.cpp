@@ -2,6 +2,7 @@
 #include "Project3.h"
 #include "ui_paintWidget.h"
 
+
 QColor toQColor(Color color)
 {
 	switch (color)
@@ -163,58 +164,119 @@ void paintWidget::paintEvent(QPaintEvent* e)
 		painter.setPen(QPen(toQColor(model->getData().color), 2));
 
 		equation.setInput(model->getData().equation.toStdString());
+		int type = equation.type();
+
 		QPointF lastPoint;
 		QLineF lastLine;
 		bool lock = false;
-		for (double i = x_l; i < x_r; i += (x_r - x_l) / 500)
+
+		if (type == 0)
 		{
-			vector<double> numbers;
-			NumWithName setX("x", i), getY("y", 0);
-			int code = equation.calculate(setX, getY);			//設定變數和結果
-			if (!code)
+			for (double i = x_l; i < x_r; i += (x_r - x_l) / 500)
 			{
-				model->error(false);
-
-
-				if (model->getData().visible)
+				vector<double> numbers;
+				NumWithName setX("x", i), getY("y", 0);
+				int code = equation.calculate(setX, getY);			//設定變數和結果
+				if (!code)
 				{
-					double y = getY.num; //得到結果
+					model->error(false);
 
-					if (lastPoint.isNull())
-						lastPoint = QPointF((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
-					else
+
+					if (model->getData().visible)
 					{
-						double lastY = lastPoint.y() * (y_d - y_u) / h + y_u, nowY = y;
-						QPointF nowPoint((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
-						QLineF nowLine(lastPoint, nowPoint);
+						double y = getY.num; //得到結果
 
-						double degree = nowLine.angleTo(lastLine);
-						//if (abs(i) <3)
-							//qDebug() <<i <<' ' << degree;
-						if (degree > 170 && degree < 190)	//判斷是否為斷層
-							lock = !lock;
+						if (lastPoint.isNull())
+							lastPoint = QPointF((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
+						else
+						{
+							QPointF nowPoint((i - x_l) * (w / (x_r - x_l)), (y - y_u) * (h / (y_d - y_u)));
+							QLineF nowLine(lastPoint, nowPoint);
+
+							double degree = nowLine.angleTo(lastLine);
+							//if (abs(i) <3)
+								//qDebug() <<i <<' ' << degree;
+							if (degree > 170 && degree < 190)	//判斷是否為斷層
+								lock = !lock;
 
 
-						if (!lock)
-							painter.drawLine(nowLine);
+							if (!lock)
+								painter.drawLine(nowLine);
 
 
-						//if (abs(i) < 1);
-							//qDebug() << "last: " << lastY << "| now: " << nowY;
-						lastPoint = nowPoint;
-						lastLine = nowLine;
+							//if (abs(i) < 1);
+								//qDebug() << "last: " << lastY << "| now: " << nowY;
+							lastPoint = nowPoint;
+							lastLine = nowLine;
+						}
 					}
 				}
+				else if (code == -1)
+				{
+					model->error(true);
+					break;
+				}
+				else if (code == 1)
+				{
+					model->error(false);
+				}
+
 			}
-			else if (code == -1)
+		}
+		else if (type == 1)
+		{
+			for (double i = y_d; i < y_u; i += (y_u - y_d) / 500)
 			{
-				model->error(true);
-				break;
+				vector<double> numbers;
+				NumWithName setY("y", i), getX("x", 0);
+				int code = equation.calculate(setY, getX);			//設定變數和結果
+				if (!code)
+				{
+					model->error(false);
+
+
+					if (model->getData().visible)
+					{
+						double x = getX.num; //得到結果
+
+						if (lastPoint.isNull())
+							lastPoint = QPointF((x - x_l) * (w / (x_r - x_l)), (i - y_u) * (h / (y_d - y_u)));
+						else
+						{
+							QPointF nowPoint((x - x_l) * (w / (x_r - x_l)), (i - y_u) * (h / (y_d - y_u)));
+							QLineF nowLine(lastPoint, nowPoint);
+
+							double degree = nowLine.angleTo(lastLine);
+							//if (abs(i) <3)
+								//qDebug() <<i <<' ' << degree;
+							if (degree > 170 && degree < 190)	//判斷是否為斷層
+								lock = !lock;
+
+
+							if (!lock)
+								painter.drawLine(nowLine);
+
+
+							//if (abs(i) < 1);
+								//qDebug() << "last: " << lastY << "| now: " << nowY;
+							lastPoint = nowPoint;
+							lastLine = nowLine;
+						}
+					}
+				}
+				else if (code == -1)
+				{
+					model->error(true);
+					break;
+				}
+				else if (code == 1)
+				{
+					model->error(false);
+				}
 			}
-			else if (code == 1)
-			{
-				model->error(false);
-			}
+		}
+		else
+		{
 
 		}
 	}
@@ -266,8 +328,8 @@ void paintWidget::mouseMoveEvent(QMouseEvent* e)
 void paintWidget::wheelEvent(QWheelEvent* event)
 {
 	//int mX = event->x(), mY = event->y();
-	double dx = ((event->x() * (x_r - x_l) / this->width() + x_l))*  (0.3),
-		dy = ((event->y() * (y_d - y_u) / this->height() + y_u)) *  (0.3);
+	double dx = ((event->x() * (x_r - x_l) / this->width() + x_l)) * (0.3),
+		dy = ((event->y() * (y_d - y_u) / this->height() + y_u)) * (0.3);
 	if (event->delta() > 0)
 	{
 		scale /= 1.3;

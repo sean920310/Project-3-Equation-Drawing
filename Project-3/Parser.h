@@ -25,7 +25,12 @@ public:
 	Parser();
 
 	void setInput(string input);
-	bool canUse(NumWithName var);	//耞琌计┪琌跑计
+
+	//耞琌计┪琌跑计
+	bool canUse(NumWithName var);	
+
+	//return 0: yオΑ 1:xオΑ 2:オΑ计厩Α
+	int type();	
 	vector<int> findd(char in);
 	vector<string> Postfix(string inp);
 	int calculate(NumWithName& setVar,NumWithName& getVar);
