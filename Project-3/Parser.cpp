@@ -81,7 +81,7 @@ vector<int> Parser::findd(char in) {
 	vector<int> out;
 	out.resize(2);//0计1舦
 	int time = 0;
-	char opr[15] = { '(',')','=','=','+','-','*','/','^','^','!','!','@','#','$' };
+	char opr[15] = { '(',')','=','=','+','-','*','/','~','~','^','^','@','#','$' };
 	for (int i = 0; i < 15 + 1; i++) {
 
 
@@ -113,7 +113,7 @@ vector<string> Parser::Postfix(string inp) {
 	stack<int> stack;
 	bool wronginput = false;
 	bool isnegetive = false;
-	string opr[15] = { "(",")","=","=", "+", "-", "*", "/","^","^","!","!","@","#","$" };
+	string opr[15] = { "(",")","=","=", "+", "-", "*", "/","~","~","^","^","@","#","$" };
 	string temp;
 
 	lastnumber.resize(2); lastnumber.at(0) = -1; lastnumber.at(1) = -1;
@@ -176,8 +176,9 @@ vector<string> Parser::Postfix(string inp) {
 		}
 		else if ((i == 0 && number.at(0) == 5) || isnegetive)//-
 		{
-			temp = temp + in[i];
+			//temp = temp + in[i];
 			isnegetive = false;
+			stack.push(8);
 		}
 		else if (number.at(0) == 1) {
 
@@ -267,7 +268,7 @@ int Parser::setVariable()
 		{
 			if (temp == varName)		//call
 				return -1;
-			if (!(temp == "+" || temp == "-" || temp == "*" || temp == "/" || temp == "^" || temp == "@" || temp == "#" || temp == "$" || temp == "(" || temp == ")"))
+			if (!(temp == "+" || temp == "-" || temp == "*" || temp == "/" || temp == "^" || temp == "@" || temp == "#" || temp == "$" || temp == "(" || temp == ")" || temp == "~"))
 			{
 				if (canUse(Variable(temp)))
 				{
@@ -420,6 +421,20 @@ int Parser::calculate(Variable& setVar, Variable& getVar)
 				return -1;
 			//throw "砆埃计ぃ单0";
 			result.num = num1.num / num2.num;
+			tempVars.push_back(result);
+		}
+		else if (postInput[i] == "~") {					//璽腹
+			if (tempVars.size() < 1)
+				return -1;
+			//throw "块岿粇ぶ计";
+			Variable num1, result;
+			num1 = tempVars.back();
+			tempVars.pop_back();
+
+			if (!canUse(num1))
+				return -1; //тぃ跑计
+
+			result.num = -num1.num;
 			tempVars.push_back(result);
 		}
 		else if (postInput[i] == "^") {					//经Ω
