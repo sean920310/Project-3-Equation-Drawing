@@ -149,14 +149,6 @@ void paintWidget::paintEvent(QPaintEvent* e)
 	}
 
 	//draw equation
-	vector<NumWithName> vars;
-	NumWithName x, y;
-	x.name = "x";
-	x.num = 0;
-	y.name = "y";
-	y.num = 0;
-	vars.push_back(x);
-	vars.push_back(y);
 
 	Parser equation;
 	for (auto model : Project3::getModelList())
@@ -172,10 +164,10 @@ void paintWidget::paintEvent(QPaintEvent* e)
 
 		if (type == 0)
 		{
+			equation.tranVar();
 			for (double i = x_l; i < x_r; i += (x_r - x_l) / 500)
 			{
-				vector<double> numbers;
-				NumWithName setX("x", i), getY("y", 0);
+				Variable setX("x", "x", i), getY("y", "y");
 				int code = equation.calculate(setX, getY);			//設定變數和結果
 				if (!code)
 				{
@@ -225,10 +217,10 @@ void paintWidget::paintEvent(QPaintEvent* e)
 		}
 		else if (type == 1)
 		{
+			equation.tranVar();
 			for (double i = y_d; i < y_u; i += (y_u - y_d) / 500)
 			{
-				vector<double> numbers;
-				NumWithName setY("y", i), getX("x", 0);
+				Variable getX("x", "x"), setY("y", "y", i);
 				int code = equation.calculate(setY, getX);			//設定變數和結果
 				if (!code)
 				{
@@ -277,9 +269,11 @@ void paintWidget::paintEvent(QPaintEvent* e)
 		}
 		else
 		{
-			NumWithName setX("x", 0), getY("y", 0);
+			bool equationError = equation.setVariable() == -1;
+			Variable setX("x", "x"), getY("y", "y");
+			equation.tranVar();
 			int code = equation.calculate(setX, getY);
-			model->error(code == -1);
+			model->error(code == -1 || equationError);
 		}
 	}
 }
@@ -330,8 +324,8 @@ void paintWidget::mouseMoveEvent(QMouseEvent* e)
 void paintWidget::wheelEvent(QWheelEvent* event)
 {
 	//int mX = event->x(), mY = event->y();
-	double dx = ((event->x() * (x_r - x_l) / this->width() + x_l)) * (0.3),
-		dy = ((event->y() * (y_d - y_u) / this->height() + y_u)) * (0.3);
+	double dx = ((event->x() * (x_r - x_l) / this->width() + x_l)-(x_l+x_r)/2) * (0.3),
+		dy = ((event->y() * (y_d - y_u) / this->height() + y_u)-(y_u+y_d)/2) * (0.3);
 	if (event->delta() > 0)
 	{
 		scale /= 1.3;

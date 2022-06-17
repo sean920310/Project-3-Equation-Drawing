@@ -1,35 +1,12 @@
 #include "Parser.h"
 
 
-Parser::Parser(string input)
-{
-	this->input = input;
-
-	while (this->input.find("sin") != string::npos)
-	{
-		auto i = this->input.find("sin");
-		this->input.replace(i, 3, "@");
-	}
-	while (this->input.find("cos") != string::npos)
-	{
-		auto i = this->input.find("cos");
-		this->input.replace(i, 3, "#");
-	}
-	while (this->input.find("tan") != string::npos)
-	{
-		auto i = this->input.find("tan");
-		this->input.replace(i, 3, "$");
-	}
-
-	if (this->input.find("y") == string::npos && this->input.find("=") == string::npos)
-	{
-		this->input = "y=" + this->input;
-	}
-
-}
-
 Parser::Parser()
 {
+	this->vars["x"].first = "x";
+	this->vars["x"].second = 0;
+	this->vars["y"].first = "y";
+	this->vars["y"].second = 0;
 }
 
 void Parser::setInput(string input)
@@ -67,7 +44,7 @@ void Parser::setInput(string input)
 
 }
 
-bool Parser::canUse(NumWithName var)
+bool Parser::canUse(Variable var)
 {
 	if (var.name == "")							//計算過後的結果
 		return true;
@@ -271,25 +248,88 @@ vector<string> Parser::Postfix(string inp) {
 	return out;
 }
 
-int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
+int Parser::setVariable()
 {
-	this->vars[setVar.name] = setVar.num;
-	this->vars[getVar.name] = getVar.num;
-	vector<NumWithName> tempVars;
-	vector<string> postInput = Postfix(input);	//postInput: 中序轉後序後的資料
+	string equation,varName;
+	if (input.find("=") != string::npos)
+	{
+		equation = input.substr(input.find("=") + 1);
+		varName = input.substr(0, input.find("=") );
+	}
+	else
+		return -1;
+	string tempEqu = equation;
+	vector<string> post;
+	for (const auto& n : vars)
+	{
+		post = Postfix(tempEqu);	//post: 中序轉後序後的資料
+		for (const string& temp : post)
+		{
+			if (temp == varName)		//自己call自己
+				return -1;
+			if (!(temp == "+" || temp == "-" || temp == "*" || temp == "/" || temp == "^" || temp == "@" || temp == "#" || temp == "$" || temp == "(" || temp == ")"))
+			{
+				if (canUse(Variable(temp)))
+				{
+					if (vars.count(temp))
+					{
+						tempEqu.replace(tempEqu.find(temp), temp.length(), '(' + vars[temp].first + ')');
+					}
+				}
+				else
+					return -1;
+			}
+		}
+	}
+
+
+	vars[varName].first = equation;
+	input = equation;
+	return 0;
+}
+
+void Parser::tranVar()
+{
+	for (const auto& n : vars)
+	{
+		postInput = Postfix(input);	//postInput: 中序轉後序後的資料
+		for (auto& temp : postInput)
+		{
+			if (vars.count(temp))
+			{
+				input.replace(input.find(temp), temp.length(), '(' + vars[temp].first + ')');
+			}
+		}
+	}
+}
+
+int Parser::calculate(Variable& setVar, Variable& getVar)
+{
+	this->vars[setVar.name].first = setVar.equation;
+	this->vars[setVar.name].second = setVar.num;
+	this->vars[getVar.name].first = getVar.equation;
+	this->vars[getVar.name].second = getVar.num;
+	for (int i=1;i<postInput.size();i++)
+	{
+		if (postInput[i] == getVar.name)		//自己call自己
+			return -1;
+	}
+	vector<Variable> tempVars;
+	//vector<string> postInput = Postfix(input);	//postInput: 中序轉後序後的資料
 	/*cout << "postFix: ";
 	for (int i = 0; i < postInput.size(); i++)
 	{
 		cout << postInput.at(i) << " ";
 	}
 	cout << endl;*/
+
 	bool countNegative = false;	//奇數個負為true
 	for (int i = 0; i < postInput.size(); i++) {
 		if (postInput[i] == "+") {						//加法
 			if (tempVars.size() < 2)
 				return -1;	//continue
 			//throw "輸入錯誤，缺少數值";
-			NumWithName num1, num2, result;
+			Variable num1, num2, result;
 			num2 = tempVars.back();
 			tempVars.pop_back();
 			num1 = tempVars.back();
@@ -309,7 +349,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 			if (tempVars.size() < 2) {					//bug: 1---5
 				if (tempVars.size() == 1) {
 					if (!countNegative) {
-						NumWithName num1 = tempVars.back(), result;
+						Variable num1 = tempVars.back(), result;
 						tempVars.pop_back();
 
 						if (!canUse(num1))
@@ -325,7 +365,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 			}
 			else
 			{
-				NumWithName num1, num2, result;
+				Variable num1, num2, result;
 				num2 = tempVars.back();
 				tempVars.pop_back();
 				num1 = tempVars.back();
@@ -345,7 +385,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 			if (tempVars.size() < 2)
 				return -1;
 			//throw "輸入錯誤，缺少數值";
-			NumWithName num1, num2, result;
+			Variable num1, num2, result;
 			num2 = tempVars.back();
 			tempVars.pop_back();
 			num1 = tempVars.back();
@@ -364,7 +404,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 			if (tempVars.size() < 2)
 				return -1;
 			//throw "輸入錯誤，缺少數值";
-			NumWithName num1, num2, result;
+			Variable num1, num2, result;
 			num2 = tempVars.back();
 			tempVars.pop_back();
 			num1 = tempVars.back();
@@ -386,7 +426,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 			if (tempVars.size() < 2)
 				return -1;
 			//throw "輸入錯誤，缺少數值";
-			NumWithName num1, num2, result;
+			Variable num1, num2, result;
 			num2 = tempVars.back();
 			tempVars.pop_back();
 			num1 = tempVars.back();
@@ -407,7 +447,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 		else if (postInput[i] == "@") {					//sin
 			if (tempVars.size() < 1)
 				return -1; //throw "輸入錯誤，缺少數值";
-			NumWithName num1 = tempVars.back(), result;
+			Variable num1 = tempVars.back(), result;
 			tempVars.pop_back();
 
 			if (!canUse(num1))
@@ -419,7 +459,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 		else if (postInput[i] == "#") {					//cos
 			if (tempVars.size() < 1)
 				return -1; //throw "輸入錯誤，缺少數值";
-			NumWithName num1 = tempVars.back(), result;
+			Variable num1 = tempVars.back(), result;
 			tempVars.pop_back();
 
 			if (!canUse(num1))
@@ -431,7 +471,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 		else if (postInput[i] == "$") {					//tan
 			if (tempVars.size() < 1)
 				return -1; //throw "輸入錯誤，缺少數值";
-			NumWithName num1 = tempVars.back(), result;
+			Variable num1 = tempVars.back(), result;
 			tempVars.pop_back();
 
 			if (!canUse(num1))
@@ -449,7 +489,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 			if (tempVars.size() < 2)					//assign
 				return -1;
 			//throw "輸入錯誤，缺少數值";
-			NumWithName num1, num2;
+			Variable num1, num2;
 			num2 = tempVars.back();
 			tempVars.pop_back();
 			num1 = tempVars.back();
@@ -458,7 +498,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 			if (!canUse(num2))
 				return -1; //找不到變數
 
-			this->vars[num1.name] = num2.num;
+			this->vars[num1.name].second = num2.num;
 			num1.num = num2.num;
 
 			tempVars.push_back(num1);
@@ -477,7 +517,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 				ss << postInput[i];
 				double temp;
 				ss >> temp;
-				NumWithName tempNum(postInput[i], temp);
+				Variable tempNum(postInput[i], postInput[i],temp);
 				tempVars.push_back(tempNum);					//先丟入暫存
 				//numbers.push_back(temp);
 			}
@@ -494,7 +534,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 
 				if (this->vars.count(postInput[i]))		//查詢變數是否已存在
 				{
-					NumWithName tempVar(postInput[i], this->vars[postInput[i]]);
+					Variable tempVar(postInput[i], this->vars[postInput[i]].first, this->vars[postInput[i]].second);
 					if (negtive)
 						tempVar.num *= -1;
 					tempVars.push_back(tempVar);
@@ -502,7 +542,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 				}
 				else
 				{
-					NumWithName tempVar(postInput[i], 0);	//先暫存 之後確認是否為新變數
+					Variable tempVar(postInput[i]);	//先暫存 之後確認是否為新變數
 					tempVars.push_back(tempVar);
 					//return 1;
 					//throw "找不到變數";
@@ -510,7 +550,7 @@ int Parser::calculate(NumWithName& setVar, NumWithName& getVar)
 			}
 		}
 	}
-	getVar.num = this->vars[getVar.name];
+	getVar.num = this->vars[getVar.name].second;
 	if (tempVars.size() > 1)
 		return -1;
 	if (input.find(getVar.name) == string::npos)

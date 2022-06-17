@@ -13,27 +13,38 @@ typedef struct NumWithName
 
 }NumWithName;
 
+typedef struct Variable
+{
+	string name;
+	string equation;
+	double num;
 
+	Variable() :name(""), equation(""),num(0) {};
+	Variable(string name, string equation="", double num = 0) :name(name), equation(equation), num(num) {};
+
+}Variable;
 
 class Parser
 {
 private:
 	string input;
-	map<string,double> vars;
+	map<string,pair<string,double>> vars;
+	vector<string> postInput;
 public:
-	Parser(string input);
 	Parser();
 
 	void setInput(string input);
 
 	//判斷是否為數字或是已存在的變數
-	bool canUse(NumWithName var);	
+	bool canUse(Variable var);	
 
 	//return 0: y在左式 1:x在左式 2:左式為數學式
 	int type();	
 	vector<int> findd(char in);
 	vector<string> Postfix(string inp);
-	int calculate(NumWithName& setVar,NumWithName& getVar);
+	int setVariable();
+	void tranVar();
+	int calculate(Variable& setVar,Variable& getVar);
 };
 
 
