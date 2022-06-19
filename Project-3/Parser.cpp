@@ -493,7 +493,7 @@ int Parser::calculate(Variable& setVar, Variable& getVar)
 				return -1; //找不到變數
 
 			if (isnan(tan(num1.num)))
-				return 1;
+				return -1;
 			//throw "NaN";
 
 			result.num = tan(num1.num);
@@ -534,7 +534,6 @@ int Parser::calculate(Variable& setVar, Variable& getVar)
 				ss >> temp;
 				Variable tempNum(postInput[i], postInput[i],temp);
 				tempVars.push_back(tempNum);					//先丟入暫存
-				//numbers.push_back(temp);
 			}
 			else
 			{

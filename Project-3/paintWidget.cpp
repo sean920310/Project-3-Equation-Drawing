@@ -51,6 +51,8 @@ paintWidget::paintWidget(QWidget* parent)
 	y_u = 10;
 	y_d = -10;
 	scale = 1;
+	w = this->width();
+	h = this->height();
 }
 
 paintWidget::~paintWidget()
@@ -324,8 +326,8 @@ void paintWidget::mouseMoveEvent(QMouseEvent* e)
 void paintWidget::wheelEvent(QWheelEvent* event)
 {
 	//int mX = event->x(), mY = event->y();
-	double dx = ((event->x() * (x_r - x_l) / this->width() + x_l)-(x_l+x_r)/2) * (0.3),
-		dy = ((event->y() * (y_d - y_u) / this->height() + y_u)-(y_u+y_d)/2) * (0.3);
+	double dx = ((event->x() * (x_r - x_l) / w + x_l)-(x_l+x_r)/2) * (0.3),
+		dy = ((event->y() * (y_d - y_u) / h + y_u)-(y_u+y_d)/2) * (0.3);
 	if (event->delta() > 0)
 	{
 		scale /= 1.3;
